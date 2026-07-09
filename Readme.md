@@ -8,6 +8,14 @@ This repository contains an advanced Reinforcement Learning (RL) framework desig
 - **Advanced Reward Shaping:** Fine-tuned reward systems penalizing poor placement, enforcing efficient elixir management, and providing positive reinforcement for tower damage and critical crown-victory conditions.
 - **Self-Play Infrastructure:** Automated competitive training setups to match current policy iterations against historical checkpoints or randomized baselines to prevent policy stagnation.
 
+## 📺 Gameplay & Agent Demonstration
+
+Here is a 19-second demonstration of the multi-agent environment and trained policies in action:
+
+https://github.com/user-attachments/assets/ac635934-c175-40da-8311-bf1cfffc7750
+
+
+
 ## 📐 Component Architecture (Wrappers)
 
 The framework wraps the core simulator using two modular abstraction layers:
