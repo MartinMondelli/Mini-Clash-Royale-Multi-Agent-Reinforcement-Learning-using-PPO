@@ -10,9 +10,10 @@ This repository contains an advanced Reinforcement Learning (RL) framework desig
 
 ## 📺 Gameplay & Agent Demonstration
 
-Here is a 19-second demonstration of the multi-agent environment and trained policies in action:
+Here is a 20-second demonstration of the multi-agent environment and trained policies in action:
 
-https://github.com/user-attachments/assets/ac635934-c175-40da-8311-bf1cfffc7750
+
+https://github.com/user-attachments/assets/b3d1d923-f7fa-4be8-854d-3ad5416aa8ad
 
 
 
