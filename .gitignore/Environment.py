@@ -14,6 +14,91 @@ from gymnasium import spaces
 import numpy as np
 
 # =========================
+# CONSTANTS  (copied from MultiAgent_Environment_PPO.ipynb, cell-4)
+# =========================
+ARENA_WIDTH = 18
+ARENA_HEIGHT = 32
+RIVER_Y = 16
+BRIDGE_X = [4, 13]
+MAX_ELIXIR = 10
+MATCH_TIME = 180
+tower_damage = 0.5
+troop_damage = 0.8
+ELIXIR_REGEN_RATE = 0.1
+multiplier = 2
+
+# Lanes: puntos por lane, de spawn hasta torre enemiga pasando por puente
+LANES = {
+    "blue_left":  [(4, 2), (4, RIVER_Y-1), (4, 29)],
+    "blue_right": [(13, 2), (13, RIVER_Y-1), (13, 29)],
+    "red_left":   [(4, 29), (4, RIVER_Y+1), (4, 2)],
+    "red_right":  [(13, 29), (13, RIVER_Y+1), (13, 2)],
+}
+
+# =========================
+# CARDS
+# =========================
+@dataclass
+class Card:
+    name: str
+    elixir: int
+    card_type: str
+    hp: int = 0
+    damage: int = 0
+    range: int = 0
+    speed: float = 0.0
+    radius: int = 0
+    target_preference: str = "any"  # "tower" o "any"
+
+ALL_CARDS = {
+    # Troops
+    "knight":     Card("knight",      3, "troop", hp=1452, damage=143,   speed=0.7, range=1, target_preference="any"),
+    "archers":    Card("archers",     3, "troop", hp=254,  damage=88,    speed=0.9, range=5, target_preference="any"),
+    "goblins":    Card("goblins",     2, "troop", hp=169,  damage=115,   speed=1.1, range=1, target_preference="any"),
+    "skeletons":  Card("skeletons",   1, "troop", hp=67,   damage=67,    speed=1.0, range=1, target_preference="any"),
+    "minions":    Card("minions",     3, "troop", hp=190,  damage=84,    speed=1.0, range=3, target_preference="any"),
+    "baby_dragon":Card("baby_dragon", 4, "troop", hp=1152, damage=161,   speed=1.0, range=3, target_preference="any"),
+    "valkyrie":   Card("valkyrie",    4, "troop", hp=1654, damage=140,   speed=0.8, range=1, target_preference="any"),
+    "mega_knight":Card("mega_knight", 7, "troop", hp=2624, damage=223,   speed=0.8, range=1, target_preference="any"),
+
+    # Tanks high HP
+    "giant":      Card("giant",       5, "troop", hp=3500, damage=220,   speed=0.7, range=1, target_preference="tower"),
+    "royal_giant":Card("royal_giant", 6, "troop", hp=3072, damage=199,   speed=0.6, range=6, target_preference="tower"),
+    "golem":      Card("golem",       8, "troop", hp=4100, damage=300,   speed=0.5, range=1, target_preference="tower"),
+    "hog_rider":  Card("hog_rider",   4, "troop", hp=906,  damage=194,   speed=1.1, range=1, target_preference="tower"),
+
+    # Spells
+    "fireball":   Card("fireball",    4, "spell", damage=689, range=3, speed=0, target_preference="any"),
+    "arrows":     Card("arrows",      3, "spell", damage=243, range=4, speed=0, target_preference="any"),
+    "zap":        Card("zap",         2, "spell", damage=187, range=3, speed=0, target_preference="any"),
+    "poison":     Card("poison",      4, "spell", damage=164, range=3, speed=0, target_preference="any"),
+
+    # Structures
+    "cannon":     Card("cannon",      3, "building", hp=742, damage=127, range=3, speed=0, target_preference="any"),
+    "tesla":      Card("tesla",       4, "building", hp=954, damage=167, range=5, speed=0, target_preference="any"),
+    "bomb_tower": Card("bomb_tower",  5, "building", hp=1200,damage=200, range=3, speed=0, target_preference="any"),
+
+    # Others
+    "spear_goblins": Card("spear_goblins", 2, "troop", hp=110, damage=115, speed=1.3, range=6, target_preference="any"),
+    "minion_horde": Card("minion_horde", 5, "troop", hp=190*6, damage=84, speed=1.0, range=3, target_preference="any"),
+}
+
+CARD_LIST_MASTER = list(ALL_CARDS.keys())  # Global list of all card names
+
+# =========================
+# TOWERS
+# =========================
+@dataclass
+class Tower:
+    x: int
+    y: int
+    hp: int
+    damage: int = 0
+    range: int = 0
+    is_destroyed: bool = False  # Flag para torres destruidas
+
+
+# =========================
 # ENVIRONMENT
 # =========================
 class MiniClashRoyaleEnv(gym.Env):
