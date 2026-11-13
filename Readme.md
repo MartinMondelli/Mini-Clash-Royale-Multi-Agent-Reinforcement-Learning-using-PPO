@@ -49,6 +49,18 @@ pip install gymnasium numpy matplotlib
 
 (Note: The baseline MiniClashRoyaleEnv simulator requires proprietary package access. For integration and licensing of the core environment, please refer to the primary developer guidelines inside the codebase headers).
 
+## 🎮 Play and Train Against a PPO Agent
+
+After training the competitive agents in `MultiAgent_Environment_PPO.ipynb`, play from a terminal with:
+
+```bash
+python play_vs_model.py --model-side blue
+```
+
+You play red by default in that example. The script loads `trained_model_blue.zip` and its matching `trained_model_blue_vecnormalize.pkl`; use `--model-side red` to play against the red model instead. On each turn, choose a card from your displayed hand and an `x,y` placement within your side of the arena. After each finished match, the script performs a PPO update using that match's experience and saves both the updated model and normalization statistics in place. Use `--save-model` and `--save-vecnormalize` to preserve the original checkpoints.
+
+The script requires the trained PPO model and the corresponding VecNormalize file created by the notebook. Install the Python dependencies above (including `gym` and `ipython`) before running it.
+
 ⚠️ Current Scope and Computational Framework
 This repository represents Version 1.0 (Initial Release) of the project. Given the intensive computational requirements inherently associated with training deep multi-agent reinforcement learning models, this initial iteration has been calibrated to accommodate standard consumer-grade hardware configurations.
 To maintain training viability under restricted localized hardware budgets, optimization caps have been applied to hyperparameter scales, batch sizes, and total training timesteps. While the agent successfully masters fundamental placement strategies and resource-conservation loops, higher-tier tactical meta-play and deep behavioral convergence remain bounded by current compute allocations. Future versions plan to scale these boundaries via cloud-distributed execution.
